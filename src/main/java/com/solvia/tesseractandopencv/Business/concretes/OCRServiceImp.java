@@ -11,12 +11,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class OCRServiceImp implements OCRService {
 
     @Override
-    public TaxPlateDTO scanFile(MultipartFile file, boolean type) {
-        return TesseractHelper.OCRProcess(ConvertHelper.convertFile(file), type);
+    public TaxPlateDTO scanFile(MultipartFile file) {
+       return TesseractHelper.OCRProcess(ConvertHelper.convertFile(file));
+        //return null;
     }
 
     @Override
     public String scanFileTest(MultipartFile file) {
+        //return TesseractHelper.OCRProcess(ConvertHelper.convertFile(file));
+
         return null;
     }
 }

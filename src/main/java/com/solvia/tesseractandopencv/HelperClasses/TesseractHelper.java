@@ -4,22 +4,27 @@ import com.solvia.tesseractandopencv.DTO.TaxPlateDTO;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import net.sourceforge.tess4j.util.ImageIOHelper;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TesseractHelper {
+
+
 
     private TesseractHelper(){
         throw new UnsupportedOperationException("You can not create this classes object.");
     }
 
-    public static synchronized TaxPlateDTO OCRProcess(File file, boolean type){
-        //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    public static synchronized TaxPlateDTO OCRProcess(File file){
 
         nu.pattern.OpenCV.loadLibrary();
 
@@ -32,6 +37,7 @@ public class TesseractHelper {
 
 
         Mat resultMat =  new Mat();
+
         Imgproc.threshold(source, resultMat, 250,255, Imgproc.THRESH_BINARY);
 
         Imgcodecs.imwrite(file.getAbsolutePath(), resultMat);
@@ -47,18 +53,55 @@ public class TesseractHelper {
 
         tesseract.setTessVariable("user_defined_dpi", "300");
 
-        //tesseract.setTessVariable("preserve_interword_spaces", "1");
-        //tesseract.setTessVariable("tessedit_use_reject_spaces", "1");
-        //tesseract.setTessVariable("tessedit_resegment_from_line_boxes","0");
+        StringBuilder stringBuilder = new StringBuilder();
+
+
+        List<String> listString = new ArrayList<>();
 
         try {
-            result = tesseract.doOCR(imageFile);
+            listString.add(tesseract.doOCR(imageFile, OCRLocationHelper.AD_SOYAD.getRectangle()));
+            listString.add(tesseract.doOCR(imageFile, OCRLocationHelper.VERGI_DAIRESI.getRectangle()));
+            listString.add(tesseract.doOCR(imageFile, OCRLocationHelper.TICARET_UNVANI.getRectangle()));
+            listString.add(tesseract.doOCR(imageFile, OCRLocationHelper.VERGI_KIMLIK_NO.getRectangle()));
+            listString.add(tesseract.doOCR(imageFile, OCRLocationHelper.ISYERI_ADRESI.getRectangle()));
+            listString.add(tesseract.doOCR(imageFile, OCRLocationHelper.TC_NO.getRectangle()));
+            listString.add(tesseract.doOCR(imageFile, OCRLocationHelper.VERGI_TURU.getRectangle()));
+            listString.add(tesseract.doOCR(imageFile, OCRLocationHelper.ISE_BASLAMA_TARIHI.getRectangle()));
+            listString.add(tesseract.doOCR(imageFile, OCRLocationHelper.ANA_FAALIYET_KODU.getRectangle()));
+
+            return DTOHelper.destroySpaces(listString);
+
         } catch (TesseractException e) {
             e.printStackTrace();
         }
 
-        return DTOHelper.destroySpaces(type,result);
+        return null;
 
     }
 
+
 }
+
+
+        /*
+
+        Mat destination = new Mat();
+
+        for (int i = 0; i < 3; i++) {
+            destination = new Mat(source.rows(), source.cols(), source.type());
+            Imgproc.GaussianBlur(source, destination, new Size(0,0), 10);
+            Core.addWeighted(source, 1.5, destination, -0.5, 0, destination);
+            Imgcodecs.imwrite(file.getAbsolutePath(),destination);
+            source = destination;
+        }
+
+
+                        //Imgproc.threshold(destination, resultMat, 55,255, Imgproc.THRESH_BINARY);
+
+
+         */
+
+
+//tesseract.setTessVariable("preserve_interword_spaces", "1");
+//tesseract.setTessVariable("tessedit_use_reject_spaces", "1");
+//tesseract.setTessVariable("tessedit_resegment_from_line_boxes","0");

@@ -1,7 +1,5 @@
 package com.solvia.tesseractandopencv.DTO;
 
-import java.time.LocalDate;
-
 //PERFORMS THE DTO TRANSFER OPERATION..
 public class TaxPlateDTO {
     private String fullName;

@@ -16,9 +16,9 @@ public class OCRController {
         this.ocrService = ocrService;
     }
 
-    @PostMapping("/scanFile/{type}")
-    public TaxPlateDTO scanFile(@RequestParam("file") MultipartFile file, @PathVariable boolean type){
-        return this.ocrService.scanFile(file,type);
+    @PostMapping("/scanFile")
+    public TaxPlateDTO scanFile(@RequestParam("file") MultipartFile file){
+        return this.ocrService.scanFile(file);
     }
 
     @PostMapping("/scanFileTest")
