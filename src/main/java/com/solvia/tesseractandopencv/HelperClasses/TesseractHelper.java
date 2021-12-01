@@ -11,6 +11,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,14 +36,26 @@ public class TesseractHelper {
         }
         Mat source = Imgcodecs.imread(file.getAbsolutePath());
 
+        /*
+        Mat destination = new Mat();
 
+        for (int i = 0; i < 3; i++) {
+            destination = new Mat(source.rows(), source.cols(), source.type());
+            Imgproc.GaussianBlur(source, destination, new Size(0,0), 10);
+            Core.addWeighted(source, 1.5, destination, -0.5, 0, destination);
+            Imgcodecs.imwrite(file.getAbsolutePath(), destination);
+            source = destination;
+        }
+
+
+        Imgproc.threshold(source, resultMat, 55,255, Imgproc.THRESH_BINARY);
+
+         */
         Mat resultMat =  new Mat();
-
-        Imgproc.threshold(source, resultMat, 250,255, Imgproc.THRESH_BINARY);
+        Imgproc.threshold(source, resultMat, 175,255, Imgproc.THRESH_BINARY);
 
         Imgcodecs.imwrite(file.getAbsolutePath(), resultMat);
 
-        String result = null;
         File imageFile = new File(file.getAbsolutePath());
 
         Tesseract tesseract = new Tesseract();
@@ -53,12 +66,16 @@ public class TesseractHelper {
 
         tesseract.setTessVariable("user_defined_dpi", "300");
 
-        StringBuilder stringBuilder = new StringBuilder();
 
 
         List<String> listString = new ArrayList<>();
 
+
+
         try {
+
+            ResizeHelper.resize(ImageIO.read(imageFile), file.getAbsolutePath());
+
             listString.add(tesseract.doOCR(imageFile, OCRLocationHelper.AD_SOYAD.getRectangle()));
             listString.add(tesseract.doOCR(imageFile, OCRLocationHelper.VERGI_DAIRESI.getRectangle()));
             listString.add(tesseract.doOCR(imageFile, OCRLocationHelper.TICARET_UNVANI.getRectangle()));
@@ -71,7 +88,7 @@ public class TesseractHelper {
 
             return DTOHelper.destroySpaces(listString);
 
-        } catch (TesseractException e) {
+        } catch (TesseractException | IOException e) {
             e.printStackTrace();
         }
 
