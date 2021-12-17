@@ -1,4 +1,4 @@
-package com.solvia.tesseractandopencv.HelperClasses;
+package com.solvia.tesseractandopencv.helperclasses;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -8,7 +8,7 @@ import java.io.IOException;
 public class CropHelper {
 
     private CropHelper(){
-        System.out.println("You can not create this classes object.");
+        throw new UnsupportedOperationException();
     }
 
     public static BufferedImage crop(double amount, File file) throws IOException {
@@ -25,12 +25,11 @@ public class CropHelper {
         int yc = (int) ((height - targetHeight*1.5) / 2);
 
         // Crop
-        BufferedImage croppedImage = originalImage.getSubimage(
+        return originalImage.getSubimage(
                 xc,
                 yc,
                 (int)targetWidth, // widht
                 (int)targetHeight // height
         );
-        return croppedImage;
     }
 }

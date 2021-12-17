@@ -1,17 +1,15 @@
-package com.solvia.tesseractandopencv.HelperClasses;
+package com.solvia.tesseractandopencv.helperclasses;
 
-import com.solvia.tesseractandopencv.DTO.TaxPlateDTO;
+import com.solvia.tesseractandopencv.dto.TaxPlateDTO;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import net.sourceforge.tess4j.util.ImageIOHelper;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,9 +23,21 @@ public class TesseractHelper {
         throw new UnsupportedOperationException("You can not create this classes object.");
     }
 
-    public static synchronized TaxPlateDTO OCRProcess(File file){
+    public static synchronized TaxPlateDTO ocrProcess(File file, String selectRotationType){
 
         nu.pattern.OpenCV.loadLibrary();
+
+        Mat mat = Imgcodecs.imread(file.getAbsolutePath());
+        switch (selectRotationType) {
+            case "-1" -> {
+                Core.rotate(mat, mat, Core.ROTATE_90_COUNTERCLOCKWISE);
+                Imgcodecs.imwrite(file.getAbsolutePath(), mat);
+            }
+            case "1" -> {
+                Core.rotate(mat, mat, Core.ROTATE_90_CLOCKWISE);
+                Imgcodecs.imwrite(file.getAbsolutePath(), mat);
+            }
+        }
 
         try {
             ImageIO.write(CropHelper.crop(1,file), ImageIOHelper.getImageFileFormat(file), file);
@@ -36,21 +46,6 @@ public class TesseractHelper {
         }
         Mat source = Imgcodecs.imread(file.getAbsolutePath());
 
-        /*
-        Mat destination = new Mat();
-
-        for (int i = 0; i < 3; i++) {
-            destination = new Mat(source.rows(), source.cols(), source.type());
-            Imgproc.GaussianBlur(source, destination, new Size(0,0), 10);
-            Core.addWeighted(source, 1.5, destination, -0.5, 0, destination);
-            Imgcodecs.imwrite(file.getAbsolutePath(), destination);
-            source = destination;
-        }
-
-
-        Imgproc.threshold(source, resultMat, 55,255, Imgproc.THRESH_BINARY);
-
-         */
         Mat resultMat =  new Mat();
         Imgproc.threshold(source, resultMat, 175,255, Imgproc.THRESH_BINARY);
 
@@ -66,11 +61,7 @@ public class TesseractHelper {
 
         tesseract.setTessVariable("user_defined_dpi", "300");
 
-
-
         List<String> listString = new ArrayList<>();
-
-
 
         try {
 
@@ -119,6 +110,3 @@ public class TesseractHelper {
          */
 
 
-//tesseract.setTessVariable("preserve_interword_spaces", "1");
-//tesseract.setTessVariable("tessedit_use_reject_spaces", "1");
-//tesseract.setTessVariable("tessedit_resegment_from_line_boxes","0");

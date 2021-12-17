@@ -1,4 +1,4 @@
-package com.solvia.tesseractandopencv.HelperClasses;
+package com.solvia.tesseractandopencv.helperclasses;
 
 import java.awt.*;
 

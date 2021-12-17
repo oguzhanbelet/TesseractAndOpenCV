@@ -1,10 +1,8 @@
-package com.solvia.tesseractandopencv.HelperClasses;
+package com.solvia.tesseractandopencv.helperclasses;
 
-import com.solvia.tesseractandopencv.DTO.TaxPlateDTO;
-import java.util.regex.*;
+import com.solvia.tesseractandopencv.dto.TaxPlateDTO;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DTOHelper {
 

@@ -1,4 +1,4 @@
-package com.solvia.tesseractandopencv.DTO;
+package com.solvia.tesseractandopencv.dto;
 
 //PERFORMS THE DTO TRANSFER OPERATION..
 public class TaxPlateDTO {

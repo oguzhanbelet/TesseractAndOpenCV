@@ -1,7 +1,8 @@
-package com.solvia.tesseractandopencv.Controller.concretes;
+package com.solvia.tesseractandopencv.controller.concretes;
 
-import com.solvia.tesseractandopencv.Business.abstracts.OCRService;
-import com.solvia.tesseractandopencv.DTO.TaxPlateDTO;
+import ch.qos.logback.core.boolex.EvaluationException;
+import com.solvia.tesseractandopencv.business.abstracts.OCRService;
+import com.solvia.tesseractandopencv.dto.TaxPlateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,8 +18,8 @@ public class OCRController {
     }
 
     @PostMapping("/scanFile")
-    public TaxPlateDTO scanFile(@RequestParam("file") MultipartFile file){
-        return this.ocrService.scanFile(file);
+    public TaxPlateDTO scanFile(@RequestParam("file") MultipartFile file, @RequestParam(value = "rotate", required = false) String selectRotatationType){
+        return this.ocrService.scanFile(file, selectRotatationType);
     }
 
     @PostMapping("/scanFileTest")
